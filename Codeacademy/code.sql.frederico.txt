@@ -1,0 +1,131 @@
+--Q1
+ select *
+ from survey
+ limit 10;
+
+--Q2
+ select 
+ question,
+ count (distinct user_id) as 'total_responses'
+ from survey
+ group by 1;
+ 
+ --Q3
+ --lower completion rates - 3 and 5
+ --no kowledge of style/shape
+ --People usually do not remember their last eye exam
+
+--Q4
+ select *
+ from quiz
+ limit 5;
+ 
+ select *
+ from home_try_on
+ limit 5;
+ 
+ select *
+ from purchase
+ limit 5;
+ 
+--Q5
+ select distinct q.user_id,
+ h.user_id is not null as 'is_home_try_on',
+ h.number_of_pairs,
+ p.user_id is not null as 'is_purchase'
+ from quiz as 'q'
+ left join home_try_on  as 'h'
+ on q.user_id = h.user_id
+ left join purchase as 'p'
+ on h.user_id = p.user_id
+limit = 10;
+
+--Q6
+ WITH t AS (
+ select distinct q.user_id,
+ h.user_id is not null as 'is_home_try_on',
+ h.number_of_pairs,
+ p.user_id is not null as 'is_purchase'
+ from quiz as 'q'
+ left join home_try_on  as 'h'
+ on q.user_id = h.user_id
+ left join purchase as 'p'
+ on h.user_id = p.user_id)
+ SELECT 
+ count (*) as 'n_quiz',
+ sum(is_home_try_on) as 'n_home_try_on',
+ sum(is_purchase) as 'n_purchase',
+ 1.0 * sum(is_home_try_on)/count (user_id) as 'quiz_to_home_%',
+  1.0 * sum(is_purchase)/sum(is_home_try_on) as 'home_to_purchase_%',
+1.0 * sum(is_purchase)/count(user_id) as 'overall_conversion_%'
+from t;
+
+--Q6a
+-- CVR% related to the number_of_pairs
+ -- when number_of_pairs = 5
+ WITH t AS (
+ select distinct q.user_id,
+ h.user_id is not null as 'is_home_try_on',
+ h.number_of_pairs,
+ p.user_id is not null as 'is_purchase'
+ from quiz as 'q'
+ left join home_try_on  as 'h'
+ on q.user_id = h.user_id
+ left join purchase as 'p'
+ on h.user_id = p.user_id)
+ SELECT 
+ count (*) as 'n_quiz',
+ sum(is_home_try_on) as 'n_home_try_on',
+ sum(is_purchase) as 'n_purchase',
+ 1.0 * sum(is_home_try_on)/count (user_id) as 'quiz_to_home_%',
+  1.0 * sum(is_purchase)/sum(is_home_try_on) as 'home_to_purchase_%',
+1.0 * sum(is_purchase)/count(user_id) as 'overall_conversion_%'
+from t
+Where number_of_pairs = '5 pairs';
+
+--Q6b
+-- CVR% related to the number_of_pairs
+ -- when number_of_pairs = 3
+  WITH t AS (
+ select distinct q.user_id,
+ h.user_id is not null as 'is_home_try_on',
+ h.number_of_pairs,
+ p.user_id is not null as 'is_purchase'
+ from quiz as 'q'
+ left join home_try_on  as 'h'
+ on q.user_id = h.user_id
+ left join purchase as 'p'
+ on h.user_id = p.user_id)
+ SELECT 
+ count (*) as 'n_quiz',
+ sum(is_home_try_on) as 'n_home_try_on',
+ sum(is_purchase) as 'n_purchase',
+ 1.0 * sum(is_home_try_on)/count (user_id) as 'quiz_to_home_%',
+  1.0 * sum(is_purchase)/sum(is_home_try_on) as 'home_to_purchase_%',
+1.0 * sum(is_purchase)/count(user_id) as 'overall_conversion_%'
+from t
+Where number_of_pairs = '3 pairs';
+
+--Q6c
+ select 
+ style,
+ count (distinct user_id) as 'total_styles'
+ from purchase
+ group by 1;
+ 
+ select 
+ fit,
+ count (distinct user_id) as 'total_fits'
+ from quiz
+ group by 1;
+ 
+ select 
+ avg(price)
+ from purchase;
+ 
+ select 
+ color,
+ count (distinct user_id) as 'total_colors'
+ from quiz
+ group by 1;
+ 
